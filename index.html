@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bunda Raya Kitchen — Daging Pilihan, Kualitas Terjamin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+<!-- ── NAVBAR ── -->
+<nav>
+  <div class="nav-brand" onclick="showPage('home')">
+    🥩 Bunda Raya Kitchen
+    <span>Premium Meat Shop</span>
+  </div>
+  <div class="nav-links">
+    <a href="#" class="active" id="nav-home" onclick="showPage('home'); return false;">Home</a>
+    <a href="#" id="nav-about" onclick="showPage('about'); return false;">About</a>
+    <a href="#" id="nav-order" onclick="showPage('order'); return false;">Order</a>
+  </div>
+  <button class="nav-cart" onclick="showPage('order'); scrollToCart()">
+    🛒 Keranjang
+    <span class="cart-badge" id="cart-badge">0</span>
+  </button>
+</nav>
+
+<!-- ════════════ HOME PAGE ════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🏆 Terpercaya Sejak 2016</div>
+      <h1>Daging <em>Segar</em> &amp; Berkualitas<br>Langsung ke Pintu Kamu</h1>
+      <p>Kami menyediakan daging sapi, ayam, dan kambing pilihan yang halal, segar setiap hari, dan siap diantarkan ke seluruh wilayah Indonesia.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('order')">🛒 Pesan Sekarang</button>
+        <button class="btn-outline" onclick="showPage('about')">📍 Lihat Toko</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">2.500+</div><div class="stat-lbl">Pelanggan Puas</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">Daging Halal</div></div>
+    <div class="stat-item"><div class="stat-num">Harian</div><div class="stat-lbl">Stok Diperbaharui</div></div>
+    <div class="stat-item"><div class="stat-num">Sameday</div><div class="stat-lbl">Pengiriman Cepat</div></div>
+  </div>
+
+  <!-- Product Section -->
+  <div class="section">
+    <p style="color:var(--red); font-weight:600; font-size:0.85rem; letter-spacing:1.5px; text-transform:uppercase;">Produk Kami</p>
+    <h2 class="section-title">Etalase Daging Pilihan</h2>
+    <div class="divider"></div>
+
+    <div class="product-filter">
+      <button class="filter-btn active" onclick="filterProduct('semua', this)">Semua</button>
+      <button class="filter-btn" onclick="filterProduct('sapi', this)">🐄 Sapi</button>
+      <button class="filter-btn" onclick="filterProduct('ayam', this)">🐔 Ayam</button>
+      <button class="filter-btn" onclick="filterProduct('kambing', this)">🥓 Sliced Beef</button>
+      <button class="filter-btn" onclick="filterProduct('olahan', this)">🍖 Olahan</button>
+    </div>
+
+    <div class="product-grid" id="product-grid"></div>
+  </div>
+
+  <!-- Keunggulan -->
+  <div style="background: var(--brown); padding: 60px 2rem;">
+    <div style="max-width:1100px; margin:0 auto; text-align:center;">
+      <h2 style="font-family:'Playfair Display',serif; color:#fff; font-size:clamp(1.5rem,3vw,2rem); margin-bottom:40px;">Mengapa Pilih Bunda Raya Kitchen?</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px;">
+        <div style="background:rgba(255,255,255,.1); border-radius:14px; padding:24px; color:#fff;">
+          <div style="font-size:2.2rem; margin-bottom:12px;">✅</div>
+          <div style="font-weight:600; margin-bottom:8px;">Halal & Higienis</div>
+          <div style="font-size:0.85rem; color:rgba(255,255,255,.7);">Semua produk bersertifikat halal MUI dan diproses secara higienis</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1); border-radius:14px; padding:24px; color:#fff;">
+          <div style="font-size:2.2rem; margin-bottom:12px;">🚚</div>
+          <div style="font-weight:600; margin-bottom:8px;">Pengiriman Cepat</div>
+          <div style="font-size:0.85rem; color:rgba(255,255,255,.7);">Antar ke rumah dengan cold storage agar daging tetap segar</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1); border-radius:14px; padding:24px; color:#fff;">
+          <div style="font-size:2.2rem; margin-bottom:12px;">🔪</div>
+          <div style="font-weight:600; margin-bottom:8px;">Potong Custom</div>
+          <div style="font-size:0.85rem; color:rgba(255,255,255,.7);">Kami siap memotong sesuai kebutuhan masak kamu</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1); border-radius:14px; padding:24px; color:#fff;">
+          <div style="font-size:2.2rem; margin-bottom:12px;">💰</div>
+          <div style="font-weight:600; margin-bottom:8px;">Harga Bersaing</div>
+          <div style="font-size:0.85rem; color:rgba(255,255,255,.7);">Langsung dari peternak, tanpa perantara yang bikin mahal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 <strong>Bunda Raya Kitchen</strong> — Jl. Damai, Gandul, Kec. Cinere, Kota Depok, Jawa Barat 16514 &nbsp;|&nbsp; 📞 +62 878-8233-9338
+  </footer>
+</div>
+
+<!-- ════════════ ABOUT PAGE ════════════ -->
+<div class="page" id="page-about">
+
+  <div class="about-hero">
+    <h2>Tentang Bunda Raya Kitchen</h2>
+    <p>Dirintis sejak 2016, kami hadir untuk memastikan setiap keluarga seluruh Indonesia mendapatkan daging berkualitas dengan harga yang wajar.</p>
+  </div>
+
+  <div class="about-grid">
+    <div>
+      <div class="about-story">
+        <h3>Cerita Kami</h3>
+        <p>Bunda Raya Kitchen bermula dari kios sederhana di Depok. Bapak Rival Akhmadi, pendiri kami, percaya bahwa kualitas daging tidak harus mahal jika pengelolaannya benar.</p>
+        <p>Kini kami melayani lebih dari 2.500++ pelanggan setia dan memiliki armada pengiriman berpendingin yang siap menjangkau seluruh Indonesia.</p>
+        <p>Setiap produk yang kami jual sudah melalui seleksi ketat — dari pilihan hewan ternak, proses penyembelihan halal, hingga pengemasan yang higienis.</p>
+      </div>
+
+      <ul class="features-list">
+        <li><span class="feat-icon">🏅</span> <div><strong>Bersertifikat Halal MUI</strong><br><span style="color:var(--muted);font-size:0.82rem;">Nomor: 12345678901234</span></div></li>
+        <li><span class="feat-icon">❄️</span> <div><strong>Cold Chain System</strong><br><span style="color:var(--muted);font-size:0.82rem;">Rantai dingin dari kandang hingga pintu rumah</span></div></li>
+        <li><span class="feat-icon">📦</span> <div><strong>Packaging Vakum</strong><br><span style="color:var(--muted);font-size:0.82rem;">Tahan 3–5 hari di kulkas, 3 bulan di freezer</span></div></li>
+        <li><span class="feat-icon">🌱</span> <div><strong>Peternak Lokal</strong><br><span style="color:var(--muted);font-size:0.82rem;">Mendukung peternak sapi & kambing Jawa Barat</span></div></li>
+      </ul>
+    </div>
+
+    <div>
+      <!-- Contact -->
+      <div class="contact-card">
+        <h4>📍 Alamat & Kontak</h4>
+        <div class="contact-row">
+          <span class="contact-icon">🏪</span>
+          <div>
+            <div class="contact-label">Alamat Toko</div>
+            <div class="contact-val">Jl. Damai, Gandul, Kec. Cinere, Kota Depok, Jawa Barat 16514</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">⏰</span>
+          <div>
+            <div class="contact-label">Jam Operasional</div>
+            <div class="contact-val">Senin–Sabtu: 06.00–18.00<br>Minggu: 06.00–12.00</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">📞</span>
+          <div>
+            <div class="contact-label">Telepon / WhatsApp</div>
+            <div class="contact-val">+62 878-8233-9338</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">📧</span>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-val">bundarayakitchen@gmail.com</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">📸</span>
+          <div>
+            <div class="contact-label">Instagram</div>
+            <div class="contact-val">@bundarayakitchen</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maps -->
+      <div class="map-wrapper">
+        <iframe
+          src= "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.4192019829447!2d106.7884213!3d-6.3397146!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ef99b9d6fa3f%3A0x6b234ddd6d9a1fe0!2scv%20r4%20raya%20network!5e0!3m2!1sid!2sid!4v1779391432536!5m2!1sid!2sid"
+          loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+          title="Lokasi Bunda Raya Kitchen di Google Maps">
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tim -->
+  <div style="background:var(--warm); padding:48px 2rem;">
+    <div style="max-width:1100px; margin:0 auto;">
+      <p style="color:var(--red); font-weight:600; font-size:0.82rem; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px;">Tim Kami</p>
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem; margin-bottom:24px;">Contact Person</h3>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">AF</div>
+          <div class="team-name">Rival Akhmadi</div>
+          <div class="team-role">Pemilik / Owner</div>
+          <a class="team-wa" href="https://wa.me/6287882339338" target="_blank">💬 WhatsApp</a>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">SR</div>
+          <div class="team-name">Rivshultan Raza</div>
+          <div class="team-role">Customer Service</div>
+          <a class="team-wa" href="https://wa.me/6281298765432" target="_blank">💬 WhatsApp</a>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">BH</div>
+          <div class="team-name">Fadhlan Rizqy</div>
+          <div class="team-role">Koordinator Pengiriman</div>
+          <a class="team-wa" href="https://wa.me/6281345678901" target="_blank">💬 WhatsApp</a>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">DW</div>
+          <div class="team-name">aqmar haidar</div>
+          <div class="team-role">Admin & Keuangan</div>
+          <a class="team-wa" href="https://wa.me/6281456789012" target="_blank">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 <strong>Bunda Raya Kitchen</strong> — Jl. Damai, Gandul, Kec. Cinere, Kota Depok, Jawa Barat 16514 &nbsp;|&nbsp; 📞 +62 878-8233-9338
+  </footer>
+</div>
+
+<!-- ════════════ ORDER PAGE ════════════ -->
+<div class="page" id="page-order">
+  <div style="background:var(--red); padding:30px 2rem;">
+    <div style="max-width:1100px; margin:0 auto; color:#fff;">
+      <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem;">🛒 Halaman Pemesanan</h2>
+      <p style="opacity:.8; margin-top:4px; font-size:0.9rem;">Pilih produk, tambahkan ke keranjang, dan isi data pengiriman.</p>
+    </div>
+  </div>
+
+  <div class="order-layout">
+    <!-- Left: produk pilih -->
+    <div class="order-products">
+      <h3>Pilih Produk</h3>
+      <div class="order-grid" id="order-grid"></div>
+
+      <div style="margin-top:32px; background:var(--white); border-radius:16px; border:1px solid var(--border); padding:24px;">
+        <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:16px;">📋 Detail Pengiriman</h3>
+
+        <div class="form-group">
+          <label class="form-label">Nama Lengkap *</label>
+          <input type="text" class="form-input" id="nama" placeholder="Contoh: Budi Santoso">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label">No. HP / WhatsApp *</label>
+            <input type="tel" class="form-input" id="hp" placeholder="+62 8xx-xxxx-xxxx">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tanggal Pengiriman *</label>
+            <input type="date" class="form-input" id="tgl">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Alamat Lengkap *</label>
+          <textarea class="form-textarea" id="alamat" placeholder="Jl. Contoh No. 1, RT/RW, Kelurahan, Kecamatan, Kota"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Catatan Khusus (opsional)</label>
+          <input type="text" class="form-input" id="catatan" placeholder="Contoh: potong dadu, sudah dibersihkan, dll">
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Cart & Payment -->
+    <div>
+      <div class="cart-panel" id="cart-panel">
+        <h3>🛒 Keranjang Kamu</h3>
+        <div id="cart-items">
+          <div class="cart-empty">Belum ada produk dipilih</div>
+        </div>
+
+        <div class="cart-summary" id="cart-summary" style="display:none;">
+          <div class="summary-row"><span>Subtotal</span><span id="sum-sub">Rp 0</span></div>
+          <div class="summary-row"><span>Ongkos Kirim</span><span id="sum-ongkir">Rp 15.000</span></div>
+          <div class="summary-row total"><span>Total</span><span id="sum-total">Rp 0</span></div>
+        </div>
+    </div>
+
+        <button class="checkout-btn" id="checkout-btn" onclick="checkout()" disabled>
+          Pesan Sekarang 🚀
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 <strong>Bunda Raya Kitchen</strong> — Jl. Damai, Gandul, Kec. Cinere, Kota Depok, Jawa Barat 16514 &nbsp;|&nbsp; 📞 +62 878-8233-9338
+  </footer>
+</div>
+
+<!-- ── MODAL SUKSES ── -->
+<div class="modal-overlay" id="modal-sukses">
+  <div class="modal-box">
+    <div class="modal-icon">🎉</div>
+    <h3>Pesanan Berhasil Disimpan!</h3>
+    <p>Terima kasih telah memesan di Bunda Raya Kitchen! Silakan klik tombol di bawah untuk konfirmasi pesanan ke WhatsApp Admin.</p>
+    
+    <button id="btn-wa" onclick="goToWA()" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 15px; font-weight: bold;">
+      💬 Lanjut ke WhatsApp Admin
+    </button>
+    <br><br>
+    
+    <button onclick="closeModal()" style="background: none; border: none; color: gray; cursor: pointer; text-decoration: underline; font-size: 14px;">
+      Tutup & Kembali ke Beranda
+    </button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script src="script.js"></script>
+</body>
+</html>

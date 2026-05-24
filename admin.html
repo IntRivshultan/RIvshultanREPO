@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dasbor - Bunda Raya Kitchen</title>
+  <link rel="stylesheet" href="style.css"> 
+  <style>
+    /* Tambahan desain khusus halaman admin */
+    body { padding: 20px; background-color: #f4f4f4; }
+    .admin-container { background: white; padding: 20px; border-radius: 10px; max-width: 800px; margin: auto; }
+    .menu-btn { padding: 10px 20px; margin-right: 10px; cursor: pointer; background: var(--red); color: white; border: none; border-radius: 5px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+    .card { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    <h1>👨‍🍳 Dasbor Admin - Bunda Raya Kitchen</h1>
+    <hr><br>
+    
+    <button class="menu-btn" onclick="showSection('produk')">📦 Kelola Etalase</button>
+    <button class="menu-btn" onclick="showSection('pesanan')">📝 Daftar Pesanan Masuk</button>
+    <br><br>
+
+    <div id="section-produk" style="display: block;">
+      <h2>Tambah Produk Baru</h2>
+      <div class="card">
+        <div class="form-group"><input type="text" id="nama" placeholder="Nama Produk (ex: Daging Sapi Paha)"></div>
+        <div class="form-group"><input type="text" id="kategori" placeholder="Kategori (Sapi / Ayam / Kambing)"></div>
+        <div class="form-group"><input type="number" id="harga" placeholder="Harga (Hanya Angka, ex: 120000)"></div>
+        <div class="form-group"><textarea id="deskripsi" placeholder="Deskripsi Singkat"></textarea></div>
+        <div class="form-group"><input type="text" id="gambar_url" placeholder="Link URL Gambar / Foto Produk"></div>
+        <button class="menu-btn" onclick="tambahProduk()" style="background: var(--green);">+ Simpan ke Etalase</button>
+      </div>
+
+      <h2>Daftar Etalase Saat Ini</h2>
+      <div id="list-produk"><i>Sedang memuat data dari database...</i></div>
+    </div>
+
+    <div id="section-pesanan" style="display: none;">
+      <h2>Pesanan Masuk dari Pembeli</h2>
+      <div id="list-pesanan"><i>Sedang memuat data dari database...</i></div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
