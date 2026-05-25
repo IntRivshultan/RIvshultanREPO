@@ -3,43 +3,69 @@ const supabaseUrl = 'https://jqqdlngmusacrspjoyiy.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxcWRsbmdtdXNhY3JzcGpveWl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2Mjk0OTMsImV4cCI6MjA5NTIwNTQ5M30.ZuZuJhQ3l1_bFM02kHa8RmMH3trWS76ufXH5evUiY5Q';
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// 2. FUNGSI NAVIGASI MENU ADMIN
-function showSection(section) {
-  document.getElementById('section-produk').style.display = 'none';
-  document.getElementById('section-pesanan').style.display = 'none';
-  document.getElementById('section-' + section).style.display = 'block';
+// 2. HELPERS
+function fmt(n) {
+  return 'Rp ' + Number(n).toLocaleString('id-ID');
+}
+function catClass(cat) {
+  const map = { sapi: 'cat-sapi', ayam: 'cat-ayam', 'sliced beef': 'cat-sapi', olahan: 'cat-olahan' };
+  return map[cat] || 'cat-default';
 }
 
-// 3. FITUR KELOLA PRODUK (CRUD)
+// 3. MUAT PRODUK
 async function muatProduk() {
   const listDiv = document.getElementById('list-produk');
+  listDiv.innerHTML = `
+    <div class="loading-skeleton">
+      <div class="skeleton-box"></div>
+      <div class="skeleton-box"></div>
+      <div class="skeleton-box"></div>
+    </div>`;
+
   const { data: semuaProduk, error } = await supabaseClient
-    .from('produk')
-    .select('*')
-    .order('id', { ascending: true });
+    .from('produk').select('*').order('id', { ascending: true });
 
   if (error) {
-    listDiv.innerHTML = `<p style="color:red;">⚠️ Gagal memuat data: ${error.message}</p>`;
+    listDiv.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Gagal memuat data: ${error.message}</p></div>`;
     return;
   }
+
+  // Update stats
+  document.getElementById('stat-total-produk').textContent = semuaProduk.length;
+  const kategoriUnik = [...new Set(semuaProduk.map(p => p.kategori))].filter(Boolean);
+  document.getElementById('stat-kategori').textContent = kategoriUnik.length;
+  document.getElementById('produk-count-label').textContent = `(${semuaProduk.length} produk)`;
 
   if (semuaProduk.length === 0) {
-    listDiv.innerHTML = '<p style="color:gray; text-align:center; padding:20px;">Belum ada produk di etalase. Yuk tambah produk pertama!</p>';
+    listDiv.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🛒</div>
+        <p>Belum ada produk di etalase.<br>Yuk tambah produk pertama!</p>
+      </div>`;
     return;
   }
 
-  listDiv.innerHTML = semuaProduk.map(p => `
-    <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-      <div>
-        <strong>${p.nama}</strong> <span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:4px;">${p.kategori}</span><br>
-        <span style="color:var(--red); font-weight:bold; font-size:0.95rem;">Rp ${Number(p.harga).toLocaleString('id-ID')}</span><br>
-        <small style="color:gray;">${p.deskripsi || 'Tidak ada deskripsi'}</small>
+  listDiv.innerHTML = `<div class="produk-grid">` + semuaProduk.map(p => `
+    <div class="produk-item">
+      <div class="produk-img-thumb">
+        ${p.gambar_url
+          ? `<img src="${p.gambar_url}" alt="${p.nama}" onerror="this.parentNode.innerHTML='<span class=no-img>🥩</span>'">`
+          : `<span class="no-img">🥩</span>`
+        }
       </div>
-      <button onclick="hapusProduk(${p.id})" style="background:var(--red); color:white; border:none; padding:6px 12px; border-radius:5px; cursor:pointer; font-weight:bold;">Hapus</button>
+      <div class="produk-info">
+        <div class="produk-name" title="${p.nama}">${p.nama}</div>
+        <span class="produk-cat ${catClass(p.kategori)}">${p.kategori || 'lainnya'}</span>
+        <div class="produk-price">${fmt(p.harga)}</div>
+        <div class="produk-actions">
+          <button class="btn btn-red btn-sm" onclick="window.__openModalHapus(${p.id}, '${p.nama.replace(/'/g, "\\'")}')">🗑️ Hapus</button>
+        </div>
+      </div>
     </div>
-  `).join('');
+  `).join('') + `</div>`;
 }
 
+// 4. TAMBAH PRODUK
 async function tambahProduk() {
   const nama = document.getElementById('nama').value.trim();
   const kategori = document.getElementById('kategori').value.trim().toLowerCase();
@@ -48,87 +74,112 @@ async function tambahProduk() {
   const gambar_url = document.getElementById('gambar_url').value.trim();
 
   if (!nama || !kategori || !harga) {
-    alert("⚠️ Nama, Kategori, dan Harga wajib diisi!");
+    window.__showToast('Nama, Kategori, dan Harga wajib diisi!', 'warning');
     return;
   }
 
-  const { error } = await supabaseClient.from('produk').insert([{ nama, kategori, harga: parseInt(harga), deskripsi, gambar_url }]);
+  const { error } = await supabaseClient.from('produk').insert([
+    { nama, kategori, harga: parseInt(harga), deskripsi, gambar_url }
+  ]);
 
   if (error) {
-    alert("⚠️ Gagal menambah produk: " + error.message);
+    window.__showToast('Gagal menambah produk: ' + error.message, 'error');
   } else {
-    alert("🎉 Produk baru berhasil disimpan ke Supabase!");
-    document.getElementById('nama').value = '';
+    window.__showToast(`"${nama}" berhasil ditambahkan ke etalase! 🎉`, 'success');
+    ['nama','harga','deskripsi','gambar_url'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('kategori').value = '';
-    document.getElementById('harga').value = '';
-    document.getElementById('deskripsi').value = '';
-    document.getElementById('gambar_url').value = '';
-    muatProduk(); // Langsung update tampilan
+    muatProduk();
   }
 }
 
+// 5. HAPUS PRODUK
 async function hapusProduk(id) {
-  if (!confirm("Apakah kamu yakin ingin menghapus produk ini?")) return;
   const { error } = await supabaseClient.from('produk').delete().eq('id', id);
-  if (error) alert("⚠️ Gagal menghapus produk: " + error.message);
-  else muatProduk();
+  if (error) {
+    window.__showToast('Gagal menghapus produk: ' + error.message, 'error');
+  } else {
+    window.__showToast('Produk berhasil dihapus.', 'success');
+    muatProduk();
+  }
 }
 
-// Jalankan saat pertama kali dibuka
-muatProduk();
-
-// 4. FITUR KELOLA PESANAN MASUK
+// 6. MUAT PESANAN
 async function muatPesanan() {
   const listDiv = document.getElementById('list-pesanan');
-  listDiv.innerHTML = '<i>Sedang mengambil data pesanan...</i>';
+  listDiv.innerHTML = `
+    <div class="loading-skeleton">
+      <div class="skeleton-box" style="height:160px;"></div>
+      <div class="skeleton-box" style="height:160px;"></div>
+    </div>`;
 
-  // Ambil data pesanan, urutkan dari yang paling baru (id descending)
   const { data: semuaPesanan, error } = await supabaseClient
-    .from('pesanan')
-    .select('*')
-    .order('id', { ascending: false });
+    .from('pesanan').select('*').order('id', { ascending: false });
 
   if (error) {
-    listDiv.innerHTML = `<span style="color:red;">Gagal memuat pesanan: ${error.message}</span>`;
+    listDiv.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Gagal memuat pesanan: ${error.message}</p></div>`;
     return;
   }
+
+  // Update stats
+  const jumlah = semuaPesanan ? semuaPesanan.length : 0;
+  document.getElementById('stat-total-pesanan').textContent = jumlah;
+  document.getElementById('pesanan-count').textContent = jumlah;
+  document.getElementById('pesanan-count-label').textContent = `(${jumlah} pesanan)`;
+
+  const totalOmset = semuaPesanan ? semuaPesanan.reduce((sum, p) => sum + (p.total_harga || 0), 0) : 0;
+  document.getElementById('stat-total-omset').textContent = fmt(totalOmset);
 
   if (!semuaPesanan || semuaPesanan.length === 0) {
-    listDiv.innerHTML = '<i>Belum ada pesanan masuk.</i>';
+    listDiv.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <p>Belum ada pesanan masuk hari ini.</p>
+      </div>`;
     return;
   }
 
-  // Cetak data pesanan menjadi kartu HTML
-  listDiv.innerHTML = semuaPesanan.map(p => {
-    // Terjemahkan keranjang dari JSON ke format bacaan
-    let daftarBelanja = '';
+  listDiv.innerHTML = `<div class="pesanan-list">` + semuaPesanan.map(p => {
+    let daftarItems = '';
     try {
       const keranjangArr = typeof p.keranjang === 'string' ? JSON.parse(p.keranjang) : p.keranjang;
-      daftarBelanja = keranjangArr.map(item => 
-        `<li>${item.nama_produk} <b>(${item.jumlah}x)</b> - Rp ${item.subtotal.toLocaleString('id-ID')}</li>`
-      ).join('');
+      daftarItems = keranjangArr.map(item => `
+        <div class="pesanan-item-row">
+          <span>${item.nama_produk} <span class="pesanan-item-qty">(${item.jumlah}x)</span></span>
+          <span class="pesanan-item-subtotal">${fmt(item.subtotal)}</span>
+        </div>
+      `).join('');
     } catch (err) {
-      daftarBelanja = '<li><i>Gagal memuat detail keranjang</i></li>';
+      daftarItems = `<div class="pesanan-item-row"><span>Gagal memuat detail</span></div>`;
     }
 
     return `
-      <div class="card" style="border-left: 5px solid var(--red); margin-bottom: 20px;">
-        <h3 style="margin-top: 0;">👤 ${p.nama} <span style="font-size: 14px; color: gray;">(${p.hp})</span></h3>
-        <p style="margin: 5px 0;"><strong>📅 Tgl Kirim:</strong> ${p.tanggal_kirim}</p>
-        <p style="margin: 5px 0;"><strong>📍 Alamat:</strong> ${p.alamat}</p>
-        <p style="margin: 5px 0;"><strong>📝 Catatan:</strong> ${p.catatan || '-'}</p>
-        <hr style="margin: 10px 0; border: 0.5px solid #eee;">
-        <p style="margin: 5px 0;"><strong>🛒 Rincian Belanja:</strong></p>
-        <ul style="margin: 5px 0; padding-left: 20px;">
-          ${daftarBelanja}
-        </ul>
-        <div style="background: #FFF0EE; padding: 10px; margin-top: 10px; border-radius: 5px;">
-          <strong style="color: var(--red);">💰 Total Tagihan: Rp ${p.total_harga.toLocaleString('id-ID')}</strong>
+      <div class="pesanan-card">
+        <div class="pesanan-header">
+          <div>
+            <div class="pesanan-customer">👤 ${p.nama}</div>
+            <div class="pesanan-hp">📱 ${p.hp}</div>
+          </div>
+          <div class="pesanan-meta">
+            <span class="meta-chip">📅 ${p.tanggal_kirim}</span>
+            <span class="meta-chip">🆔 #${p.id}</span>
+          </div>
+        </div>
+        <div class="pesanan-body">
+          <div class="pesanan-items">${daftarItems}</div>
+          <div class="pesanan-total-box">
+            <div class="pesanan-total-label">Total Tagihan</div>
+            <div class="pesanan-total-val">${fmt(p.total_harga)}</div>
+          </div>
+        </div>
+        <div class="pesanan-footer">
+          <div class="pesanan-alamat">📍 <span>${p.alamat}</span></div>
+          ${p.catatan ? `<div class="pesanan-catatan">📝 Catatan: ${p.catatan}</div>` : ''}
         </div>
       </div>
     `;
-  }).join('');
+  }).join('') + `</div>`;
 }
 
-// Panggil fungsi muatPesanan() secara otomatis bersama dengan muatProduk()
+// 7. INIT
+muatProduk();
 muatPesanan();
