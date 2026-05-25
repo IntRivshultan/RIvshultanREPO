@@ -24,7 +24,7 @@ async function muatProdukDariSupabase() {
       price: p.harga,
       desc: p.deskripsi,
       img: p.gambar_url || 'https://via.placeholder.com/250',
-      unit: p.unit || 'kg',
+      unit: p.unit || '500 gr',
       badge: p.badge || '',
       badgeClass: p.badge_class || ''
     }));
